@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">SwipeRefreshDemo</string>
+    <!--上拉刷新提示文字-->
+    <string name="refresh_text">   正在玩命加载中....</string>
+
+
+</resources>
