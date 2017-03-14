@@ -35,6 +35,7 @@
          
          5、setSize(int size):设置进度圈的大小，只有两个值：DEFAULT、LARGE
          
+         6、postDelayed(new Runable(),long min) 设置刷新延迟时间
  ```
  
  布局，具体内容如下：
