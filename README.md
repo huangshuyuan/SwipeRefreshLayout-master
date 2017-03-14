@@ -8,6 +8,8 @@
 
 * 3.自定义支持ViewPage的刷新组件VPSwipeRefreshLayout
 
+* 4.RecyclerView+SwpieRefreshLayout实现下拉刷新效果
+
 ![主界面](http://upload-images.jianshu.io/upload_images/3805053-8a8c48481abb3224.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 
@@ -21,21 +23,26 @@
 
 ***
 ###1.原生SwipeRefreshLayout（上拉可通过滚动监听实现）
+   SwipeRefrshLayout是Google官方更新的一个Widget,可以实现下拉刷新的效果。该控件集成自ViewGroup在support-v4兼容包下，不过我们需要升级supportlibrary的版本到19.1以上。
+
 除了OnRefreshListener接口外，SwipRefreshLayout中还有一些其他重要的方法，具体如下：
 
 ```
 
          1、setOnRefreshListener(SwipeRefreshLayout.OnRefreshListener listener):设置手势滑动监听器。
          
-         2、setProgressBackgroundColor(int colorRes):设置进度圈的背景色。
-         
+         2、setProgressBackgroundColor(int colorRes):设置进度圈的背景色（已经弃用）
+        setProgressBackgroundColorSchemeResource （可以）。最新的的setProgressBackgroundColorSchemeColor（Color c） 
+        
          3、setColorSchemeResources(int… colorResIds):设置进度动画的颜色。
          
-         4、setRefreshing(Boolean refreshing):设置组件的刷洗状态。
+         4、setRefreshing(Boolean refreshing):设置组件的刷洗状态，显示或者隐藏刷新进度条 
          
          5、setSize(int size):设置进度圈的大小，只有两个值：DEFAULT、LARGE
          
          6、postDelayed(new Runable(),long min) 设置刷新延迟时间
+        
+         7、isRefreshing():检查是否处于刷新状态
  ```
  
  布局，具体内容如下：
