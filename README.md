@@ -1,7 +1,7 @@
 # SwipeRefresh 
 基于原生的SwipeRefreshLayout 做了封装处理
 
-##此项目中包括三种：
+##此项目中包括四种：
 * 1.原生SwipeRefreshLayout（上拉可通过滚动监听实现）
 
 * 2.自定义支持上拉刷新的组件
