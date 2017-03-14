@@ -8,6 +8,17 @@
 
 * 3.自定义支持ViewPage的刷新组件VPSwipeRefreshLayout
 
+![主界面](http://upload-images.jianshu.io/upload_images/3805053-8a8c48481abb3224.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+
+![下拉刷新](http://upload-images.jianshu.io/upload_images/3805053-5f25f0a9c9197680.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+
+![上拉刷新](http://upload-images.jianshu.io/upload_images/3805053-7e6843679770eb12.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+
+![支持viewpager刷新](http://upload-images.jianshu.io/upload_images/3805053-55f63c859d0eefc4.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
 ***
 ###1.原生SwipeRefreshLayout（上拉可通过滚动监听实现）
 除了OnRefreshListener接口外，SwipRefreshLayout中还有一些其他重要的方法，具体如下：
