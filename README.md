@@ -517,9 +517,326 @@ return super.onInterceptTouchEvent(ev);
 }
 
 ```
+***
+### 4.RecyclerView+SwpieRefreshLayout实现下拉刷新效果同时实现上拉功能
 
+
+![RecyclerView+SwpieRefreshLayout](http://upload-images.jianshu.io/upload_images/3805053-8af1536fc2fe63f9.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+RecyclerView实现的列表，默认情况下面是不带下拉刷新和上拉记载更多效果的，但是我在我们的实际项目当中，为了提高用户体验，这种效果一般都需要实现
+
+SwipeRefreshLayout本身自带下拉刷新的效果，那么我们可以选择在RecyclerView布局外部嵌套一层SwipeRefreshLayout布局即可，具体布局文件如下:
+```
+?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_recycle_view_refresh"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+
+    tools:context="com.hsy.refresh.ui.RecycleViewRefreshActivity">
+
+    <include
+        layout="@layout/common_top_bar_layout"
+        android:visibility="gone" />
+
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/demo_swiperefreshlayout"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:scrollbars="vertical">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/demo_recycler"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+
+        </android.support.v7.widget.RecyclerView>
+    </android.support.v4.widget.SwipeRefreshLayout>
+</LinearLayout>
+
+```
+在Activity中引用这个布局并初始化
+```
+ @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        //去除系统标题
+        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_recycle_view_refresh);
+        ButterKnife.bind(this);
+
+        initView();
+    }
+
+    /*RecyclerView 管理器*/
+    private LinearLayoutManager linearLayoutManager;
+    MyRecyclerViewAdapter adapter;
+    private int lastVisibleItem;//记录滚动位置
+
+
+    /**
+     * 初始化组件
+     */
+    private void initView() {
+               topBarTitle.setText("RecyclerView 刷新");
+
+        //设置刷新时动画的颜色，可以设置4个
+        swiperefreshLayout.setProgressBackgroundColorSchemeResource(android.R.color.white);
+        swiperefreshLayout.setColorSchemeResources(android.R.color.holo_blue_light,
+                android.R.color.holo_red_light, android.R.color.holo_orange_light,
+                android.R.color.holo_green_light);
+        // 这句话是为了，第一次进入页面的时候显示加载进度条
+        swiperefreshLayout.setProgressViewOffset(false, 0, (int) TypedValue
+                .applyDimension(TypedValue.COMPLEX_UNIT_DIP, 24, getResources()
+                        .getDisplayMetrics()));
+
+
+        //设置竖直方向
+        linearLayoutManager = new LinearLayoutManager(this);
+        linearLayoutManager.setOrientation(OrientationHelper.VERTICAL);
+        //设置管理器
+        recylerview.setLayoutManager(linearLayoutManager);
+        //添加分隔线
+        recylerview.addItemDecoration(new AdvanceDecoration(this, OrientationHelper.VERTICAL));
+
+        recylerview.setAdapter(adapter = new MyRecyclerViewAdapter(this));
+        /*实现下拉*/
+
+        swiperefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        List<String> newDatas = new ArrayList<String>();
+                        for (int i = 0; i < 5; i++) {
+                            int index = i + 1;
+                            newDatas.add("new item" + index);
+                        }
+                        adapter.addItem(newDatas);/*添加数据*/
+                        swiperefreshLayout.setRefreshing(false);
+                        Toast.makeText(RecycleViewRefreshActivity.this, "更新了五条数据...", Toast.LENGTH_SHORT).show();
+                    }
+                }, 3000);
+            }
+        });
+
+        /**
+         * 添加滚动监听，实现上拉刷新
+         */
+
+        recylerview.setOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                //当滚动到底部时刷新数据
+                if (newState == RecyclerView.SCROLL_STATE_IDLE && lastVisibleItem + 1 == adapter.getItemCount()) {
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            List<String> newDatas = new ArrayList<String>();
+                            for (int i = 0; i < 5; i++) {
+                                int index = i + 1;
+                                newDatas.add("more item" + index);
+                            }
+                            adapter.addMoreItem(newDatas);
+                            swiperefreshLayout.setRefreshing(false);
+
+                        }
+                    }, 1000);
+                }
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                //获取滚动的最后位置
+                lastVisibleItem = linearLayoutManager.findLastVisibleItemPosition();
+            }
+        });
+
+    }
+```
+实现下拉刷新用SwipeRefreshLayout 自带的进度条， 上拉刷新用类似ListView的刷新 提示“加载中”等信息。
+
+我们可以给RecyclerView 也添加一个类似FooterView的item。
+我们在Adapter中实现：
+```
+/**
+     * RecyclerView的适配器
+     */
+
+    class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAdapter.ViewHolder> {//自定义viewHoder
+        List<String> datas;
+        Context context;
+        /*加载更多*/
+        private static final int TYPE_ITEM = 0;
+        private static final int TYPE_FOOTER = 1;
+
+        public MyRecyclerViewAdapter(Context context) {
+            this.context = context;
+
+            /*初始化数据*/
+            this.datas = new ArrayList<String>();
+            for (int i = 0; i < 20; i++) {
+                int index = i + 1;
+                datas.add("item" + index);
+            }
+            /*addItem(datas);*/
+        }
+
+        //自定义的ViewHolder，持有每个Item的的所有界面元素
+        public class ViewHolder extends RecyclerView.ViewHolder {
+
+            public ViewHolder(View view) {
+                super(view);
+            }
+        }
+
+
+        //自定义的ViewHolder，持有每个Item的的所有界面元素
+        public class ItemViewHolder extends ViewHolder {
+            public TextView item_tv;
+
+            public ItemViewHolder(View view) {
+                super(view);
+                item_tv = (TextView) view.findViewById(R.id.text);
+            }
+        }
+
+        /**
+         * 底部view
+         */
+
+        class FooterViewHolder extends ViewHolder {
+
+            public FooterViewHolder(View view) {
+                super(view);
+            }
+
+        }
+
+        /**
+         * 绑定布局文件
+         *
+         * @param parent
+         * @param viewType
+         * @return
+         */
+        @Override
+        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            if (viewType == TYPE_FOOTER) {
+                final View view = LayoutInflater.from(context).inflate(R.layout.refresh_footview_layout, parent, false);
+//                view.setLayoutParams(new RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT,
+//                        RecyclerView.LayoutParams.WRAP_CONTENT));
+                FooterViewHolder viewHolder = new FooterViewHolder(view);
+                return viewHolder;
+
+            } else if (viewType == TYPE_ITEM) {
+
+                final View view = LayoutInflater.from(context).inflate(R.layout.item_recycler_layout, parent, false);
+                //这边可以做一些属性设置，甚至事件监听绑定
+                //view.setBackgroundColor(Color.RED);
+                ItemViewHolder viewHolder = new ItemViewHolder(view);
+                return viewHolder;
+            }
+            return null;
+        }
+
+        @Override
+        public void onBindViewHolder(ViewHolder holder, int position) {
+            if (holder instanceof ItemViewHolder) {
+                //设置数据
+                ((ItemViewHolder) holder).item_tv.setText(datas.get(position));
+                ((ItemViewHolder) holder).item_tv.setTag(position);
+            }
+
+        }
+
+        /*返回每一项的类型*/
+        @Override
+        public int getItemViewType(int position) {
+            // 最后一个item设置为footerView
+            if (position + 1 == getItemCount()) {
+                return TYPE_FOOTER;
+            } else {
+                return TYPE_ITEM;
+            }
+        }
+
+        // RecyclerView的count设置为数据总条数+ 1（footerView）
+        @Override
+        public int getItemCount() {
+            return datas.size() + 1;
+        }
+
+        //添加数据
+
+        public void addItem(List<String> newDatas) {
+            //mTitles.add(position, data);
+            //notifyItemInserted(position);
+            newDatas.addAll(datas);
+            datas.removeAll(datas);
+            datas.addAll(newDatas);
+            notifyDataSetChanged();
+        }
+
+        /**
+         * 添加更多数据
+         *
+         * @param newDatas
+         */
+
+        public void addMoreItem(List<String> newDatas) {
+            datas.addAll(newDatas);
+            adapter.notifyDataSetChanged();
+        }
+    }
+```
+
+refresh_footview_layout
+```
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_horizontal">
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/refresh_text" />
+</LinearLayout>
+```
+item_recycler_layout
+```
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/text"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</LinearLayout>
+
+```
 ***
 
-上面是自己研究的，最近发现一个大神已经封装好了使用，可以参照大神的
+上面是自己研究的刷新组件的使用，最近发现一个大神已经封装好了一个item侧滑的使用，可以看看大神的
 
 大神的源码地址：https://github.com/yanzhenjie/SwipeRecyclerView
+
+
+我的博客原文：http://blog.csdn.net/imshuyuan/article/details/62041447
