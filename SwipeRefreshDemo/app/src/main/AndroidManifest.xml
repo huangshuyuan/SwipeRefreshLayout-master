@@ -16,8 +16,9 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.GoogleRefreshActivity" />
-        <activity android:name=".ui.MyRefreshActivity" />
-        <activity android:name=".ui.ViewPagerRefreshActivity"></activity>
+        <activity android:name=".ui.MySwipeRefreshActivity" />
+        <activity android:name=".ui.ViewPagerRefreshActivity" />
+        <activity android:name=".ui.RecycleViewRefreshActivity"></activity>
     </application>
 
 </manifest>

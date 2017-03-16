@@ -1,8 +1,10 @@
 package com.hsy.refresh.ui;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,9 +37,57 @@ public class ViewPagerRefreshActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_page_view_refresh);
         ButterKnife.bind(this);
+        setRefresh();
 
         /*初始化viewpager*/
         initData();
+
+    }
+
+    /**
+     * 设置刷新组件
+     * <p>
+     * 1、setOnRefreshListener(SwipeRefreshLayout.OnRefreshListener listener):设置手势滑动监听器。
+     * <p>
+     * 2、setProgressBackgroundColor(int colorRes):设置进度圈的背景色。
+     * <p>
+     * 3、setColorSchemeResources(int… colorResIds):设置进度动画的颜色。
+     * <p>
+     * 4、setRefreshing(Boolean refreshing):设置组件的刷洗状态。
+     * <p>
+     * 5、setSize(int size):设置进度圈的大小，只有两个值：DEFAULT、LARGE
+     * <p>
+     *   6、postDelayed(new Runable(),long min) 设置刷新延迟时间
+     */
+
+    private void setRefresh() {
+        // 设置进度圈的背景色。
+        swiperefresh.setProgressBackgroundColorSchemeColor(Color.parseColor("#e6b8af"));
+//        设置进度动画的颜色。
+        swiperefresh.setColorSchemeResources(R.color.color_w1, R.color.color_w2, R.color.color_w3);
+        //设置进度圈的大小
+        swiperefresh.setSize(SwipeRefreshLayout.DEFAULT);
+
+        //刷新监听
+        swiperefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                //延迟两秒钟
+                swiperefresh.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        //刷新
+                        initData();
+                        //设置组件的刷洗状态。
+                        swiperefresh.setRefreshing(false);
+                    }
+                }, 2000);
+
+
+                ;
+            }
+        });
+
 
     }
 
@@ -76,7 +126,7 @@ public class ViewPagerRefreshActivity extends AppCompatActivity {
         public boolean isViewFromObject(View view, Object o) {
             return o == view;
         }
-       
+
 
         @Override
         public Object instantiateItem(ViewGroup container, int position) {

@@ -3,5 +3,8 @@
     <!--上拉刷新提示文字-->
     <string name="refresh_text">   正在玩命加载中....</string>
 
+    <!--recycle-->
+    <string name="string_tv_top_bar_back">返回</string>
+    <string name="string_tv_setting">WebView页面</string>
 
 </resources>

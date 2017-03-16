@@ -47,8 +47,15 @@ public class GoogleRefreshActivity extends AppCompatActivity implements AbsListV
         setContentView(R.layout.activity_google_refresh);
         swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.main_srl);
         lv = (ListView) findViewById(R.id.main_lv);
+
+        /**
+         * 对listview添加底部的组件实现上拉
+         */
         footerView = getLayoutInflater().inflate(R.layout.refresh_footview_layout, null);
         lv.addFooterView(footerView);
+        /**
+         * 设置滚动监听
+         */
         lv.setOnScrollListener(this);
         list = new ArrayList<>();
         list.addAll(Arrays.asList("Java", "php", "C++", "C#", "IOS", "html", "C", "J2ee", "j2se", "VB", ".net", "Http", "tcp", "udp", "www"));
@@ -70,6 +77,11 @@ public class GoogleRefreshActivity extends AppCompatActivity implements AbsListV
 
     private int visibleLastIndex;//用来可显示的最后一条数据的索引
 
+    /**
+     * 重写滚动方法
+     * @param view
+     * @param scrollState
+     */
     @Override
     public void onScrollStateChanged(AbsListView view, int scrollState) {
         if (adapter.getCount() == visibleLastIndex && scrollState == SCROLL_STATE_IDLE) {
