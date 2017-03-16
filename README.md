@@ -10,7 +10,9 @@
 
 * 4.RecyclerView+SwpieRefreshLayout实现下拉刷新效果
 
-![主界面](http://upload-images.jianshu.io/upload_images/3805053-8a8c48481abb3224.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+
+![主界面](http://upload-images.jianshu.io/upload_images/3805053-db040cfcecc74ff0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 
 ![下拉刷新](http://upload-images.jianshu.io/upload_images/3805053-5f25f0a9c9197680.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
