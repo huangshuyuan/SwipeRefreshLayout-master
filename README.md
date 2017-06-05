@@ -1,7 +1,21 @@
 # SwipeRefresh 
 基于原生的SwipeRefreshLayout 做了封装处理
 
-##此项目中包括四种：
+## Gradle:
+```
+ compile com.hsy.view:hsyrefreshlibrary:1.0.1'
+```
+
+## Maven :
+```
+<dependency>
+  <groupId>com.hsy.view</groupId>
+  <artifactId>hsyrefreshlibrary</artifactId>
+  <version>1.0.1</version>
+  <type>pom</type>
+</dependency>
+```
+## 此项目中包括四种：
 * 1.原生SwipeRefreshLayout（上拉可通过滚动监听实现）
 
 * 2.自定义支持上拉刷新的组件
@@ -24,7 +38,7 @@
 ![支持viewpager刷新](http://upload-images.jianshu.io/upload_images/3805053-55f63c859d0eefc4.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 ***
-###1.原生SwipeRefreshLayout（上拉可通过滚动监听实现）
+### 1.原生SwipeRefreshLayout（上拉可通过滚动监听实现）
    SwipeRefrshLayout是Google官方更新的一个Widget,可以实现下拉刷新的效果。该控件集成自ViewGroup在support-v4兼容包下，不过我们需要升级supportlibrary的版本到19.1以上。
 
 除了OnRefreshListener接口外，SwipRefreshLayout中还有一些其他重要的方法，具体如下：
@@ -156,7 +170,7 @@ swipeRefreshLayout = (SwipeRefreshLayout)findViewById(R.id.swipeLayout);
    
 ```
 ***
-###2.自定义支持上拉刷新的组件
+### 2.自定义支持上拉刷新的组件
 
 实现下拉和上拉监听
 ```
@@ -454,7 +468,7 @@ public class RefreshLayout extends SwipeRefreshLayout implements
 }
 ```
 ***
-###3.自定义支持ViewPage的刷新组件VPSwipeRefreshLayout
+### 3.自定义支持ViewPage的刷新组件VPSwipeRefreshLayout
 
 * 原生SwipeRefreshLayout会存在以下问题：
 
