@@ -3,7 +3,7 @@
 
 ## Gradle:
 ```
- compile com.hsy.view:hsyrefreshlibrary:1.0.1'
+ compile'com.hsy.view:hsyrefreshlibrary:1.0.1'
 ```
 
 ## Maven :
