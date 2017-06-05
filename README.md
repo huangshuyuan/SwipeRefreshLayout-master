@@ -3,7 +3,7 @@
 
 ## Gradle:
 ```
- compile'com.hsy.view:hsyrefreshlibrary:1.0.1'
+ compile'com.hsy.view:hsyrefreshlibrary:1.0'
 ```
 
 ## Maven :
@@ -11,7 +11,7 @@
 <dependency>
   <groupId>com.hsy.view</groupId>
   <artifactId>hsyrefreshlibrary</artifactId>
-  <version>1.0.1</version>
+  <version>1.0</version>
   <type>pom</type>
 </dependency>
 ```
