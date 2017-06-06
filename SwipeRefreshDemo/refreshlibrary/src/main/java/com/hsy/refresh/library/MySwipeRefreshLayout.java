@@ -24,6 +24,7 @@ import java.lang.reflect.Method;
  */
 
 /**
+ *
  * 继承自SwipeRefreshLayout,从而实现滑动到底部时上拉加载更多的功能.
  */
 public class MySwipeRefreshLayout extends SwipeRefreshLayout implements
